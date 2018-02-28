@@ -7,7 +7,7 @@ public class Settings {
     //compress settings
     public static String inputZipDir;
     public static String outputZipDir;
-    public static long maxSize;
+    public static int maxSize;
 
     //decompress settings
     public static String inputUnzipDir;

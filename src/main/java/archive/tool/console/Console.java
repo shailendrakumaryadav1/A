@@ -40,7 +40,7 @@ public class Console {
         Settings.outputZipDir = outputDir;
 
         System.out.println("\n Enter max output file size in bytes:");
-        Long maxSize = scanner.nextLong();
+        Integer maxSize = scanner.nextInt();
         Settings.maxSize = maxSize;
     }
 
