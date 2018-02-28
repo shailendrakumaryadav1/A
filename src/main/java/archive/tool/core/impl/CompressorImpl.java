@@ -12,7 +12,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-public class ZipCompressor implements Compressor {
+public class CompressorImpl implements Compressor {
 
     private ZipOutputStream zipOut;
     private String zipPath;
