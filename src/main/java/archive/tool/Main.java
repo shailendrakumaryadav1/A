@@ -17,16 +17,18 @@ public class Main {
         Console console = new Console();
         console.enterSettings();
 
-        if (Settings.action == Action.COMPRESS) {
-            // TODO: Do compress here using settings
-            Compressor compressor = new ZipCompressor();
-            compressor.compress();
-        } else {
-            // TODO: Do decompress here using settings
-            Decompressor decompressor = new ZipDecompressor();
-            decompressor.decompress();
+        switch (Settings.action) {
+            case COMPRESS:
+                // TODO: Do compress here using settings
+                Compressor compressor = new ZipCompressor();
+                compressor.compress();
+                break;
+            case DECOMPRESS:
+                // TODO: Do decompress here using settings
+                Decompressor decompressor = new ZipDecompressor();
+                decompressor.decompress();
+                break;
         }
-
         System.out.println("End Program");
 
     }
