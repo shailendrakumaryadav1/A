@@ -3,10 +3,10 @@ package archive.tool.core.impl;
 import archive.tool.console.Settings;
 import archive.tool.core.Compressor;
 import archive.tool.core.Constants;
+import archive.tool.core.MultiToOneOutput;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -70,7 +70,8 @@ public class CompressorImpl implements Compressor {
     protected final Object lock = new Object();
     protected final Object threadsLock = new Object();
 
-    private boolean manage() {
+    private boolean manage() throws IOException {
+        MultiToOneOutput output = new MultiToOneOutput(destPath.toPath(), Constants.BASE_NAME, maxSize);
         int working = Settings.workerThreadsCount;
         while (!inputQueue.isEmpty() || working > 0) {
             // Wait for idle thread
@@ -93,6 +94,10 @@ public class CompressorImpl implements Compressor {
                                 }
                                 break;
                             }
+                            case PROCESS_BUFFER: {
+                                output.write(workerMsg.id, workerMsg.msgCmd, workerMsg.buffer, workerMsg.currentSize);
+                                break;
+                            }
                             case EXCEPTION: {
                                 hasToStop = true;
                                 return false;
@@ -106,6 +111,7 @@ public class CompressorImpl implements Compressor {
                 clearWorkerMsg();
             }
         }
+        output.close();
         return true;
     }
 
@@ -176,6 +182,7 @@ public class CompressorImpl implements Compressor {
 
     enum WorkerCmd {
         GET_NEXT_FILE,
+        PROCESS_BUFFER,
         EXCEPTION
     }
 
@@ -183,12 +190,18 @@ public class CompressorImpl implements Compressor {
         WorkerCmd cmd;
         File file;
         boolean ack;
+        private static final int MAX_BUFFER_SIZE = 16 << 20;// 16 MB
 
         int id, currentSize;
+        byte[] buffer;
         byte msgCmd;
 
         public CompressorThread(int id) {
             this.id = id;
+            int bufferSize = maxSize << 20;
+            if (bufferSize > MAX_BUFFER_SIZE)
+                bufferSize = MAX_BUFFER_SIZE;
+            buffer = new byte[bufferSize];
         }
 
         private boolean sendMessage(WorkerCmd msg, byte msgCmd) throws InterruptedException {
@@ -224,13 +237,42 @@ public class CompressorImpl implements Compressor {
             while (true) {
                 try {
                     // Get work to do
-                    if (!sendMessage(WorkerCmd.GET_NEXT_FILE, Constants.NONE))
+                    if (!sendMessage(WorkerCmd.GET_NEXT_FILE, Constants.CMD_NONE))
                         return;
 
                     // Compress this file
                     String subName = getSubName(file);
 
                     System.out.println(String.format("ThreadId: %d FileToCompress: %s", id, subName));
+
+
+                    // Send item type, name and attributes
+                    buffer[0] = (byte) ((file.isDirectory() ? Constants.FOLDER_MARKER : Constants.FILE_MARKER) |
+                            (file.canRead() ? Constants.MARKER_CAN_READ : Constants.MARKER_NONE) |
+                            (file.canWrite() ? Constants.MARKER_CAN_WRITE : Constants.MARKER_NONE) |
+                            (file.canExecute() ? Constants.MARKER_CAN_EXECUTE : Constants.MARKER_NONE));
+                    byte[] subNameInfo = subName.getBytes(StandardCharsets.UTF_8);
+                    System.arraycopy(subNameInfo, 0, buffer, 1, subNameInfo.length);
+                    if (!sendMessage(WorkerCmd.PROCESS_BUFFER, Constants.CMD_START_FILE, subNameInfo.length + 1))
+                        return;
+
+                    if (file.isFile()) { // If its a file, send the compressed data
+                        BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+                        int currentRead = 0, len = buffer.length;
+                        int size = 0;
+                        while ((currentRead = inputStream.read(buffer, size, len)) != -1) {
+                            len -= currentRead;
+                            size += currentRead;
+                            if (len == 0) {
+                                if (!sendMessage(WorkerCmd.PROCESS_BUFFER, Constants.CMD_WRITE_FILE, size))
+                                    return;
+                                len = buffer.length;
+                                size = 0;
+                            }
+                        }
+                        if (size != 0 && !sendMessage(WorkerCmd.PROCESS_BUFFER, Constants.CMD_WRITE_FILE, size))
+                            return;
+                    }
 
                 } catch (InterruptedException ie) {
                     ie.printStackTrace();
