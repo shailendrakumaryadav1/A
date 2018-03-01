@@ -31,7 +31,11 @@ public class Main {
             case DECOMPRESS:
                 // TODO: Do decompress here using settings
                 Decompressor decompressor = new DecompressorImpl();
-                decompressor.decompress();
+                try {
+                    decompressor.decompress();
+                } catch (Exception e) {
+                    e.printStackTrace(System.err);
+                }
                 break;
         }
         System.out.println("End Program");

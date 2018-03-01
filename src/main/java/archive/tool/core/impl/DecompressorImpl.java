@@ -1,101 +1,78 @@
 package archive.tool.core.impl;
 
 import archive.tool.console.Settings;
+import archive.tool.core.Constants;
 import archive.tool.core.Decompressor;
-import archive.tool.core.FileUtil;
+import archive.tool.core.IOneToMultiProcessor;
+import archive.tool.core.OneInputToMulti;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
-public class DecompressorImpl implements Decompressor {
+public class DecompressorImpl implements Decompressor, IOneToMultiProcessor {
 
-    private Map<String, File> largeFiles = new TreeMap<>();
-    private Map<String, FileOutputStream> largeFilesOutputStreams = new HashMap<>();
+    private File sourcePath, destPath;
+    private HashMap<Integer, OutputDecompressor> processors;
 
-    /**
-     * Decompress files. If archives contains splitted large files, stores
-     * names and sorts by parts in map. And then decompress them from first part to the last one.
-     */
-    public void decompress() throws IOException {
-        System.out.println("Start decompress.");
-        File inputDir = new File(Settings.inputUnzipDir);
-        File[] archives = inputDir.listFiles();
-        for (File archive : archives) {
-            decompressArchive(archive);
-        }
-        decompressLargeFiles();
+    public boolean decompress() throws IOException {
+        sourcePath = new File(Settings.inputUnzipDir).getCanonicalFile();
+        destPath = new File(Settings.outputUnzipDir);
+        processors = new HashMap<>();
+
+        // Validate arguments
+        if (!sourcePath.exists() || !sourcePath.isDirectory())
+            throw new IllegalArgumentException("Source path does not exist or is not a directory");
+        if (!sourcePath.canRead())
+            throw new IllegalArgumentException("Source path cannot be read");
+        if (destPath.isFile())
+            throw new IllegalArgumentException("Destination path is an existing file");
+        if (destPath.isDirectory() && !destPath.canWrite())
+            throw new IllegalArgumentException("Destination path cannot be written");
+
+        OneInputToMulti input = new OneInputToMulti(sourcePath.toPath(), Constants.BASE_NAME);
+        return input.process(this);
     }
 
-    /**
-     * Decompress single archive.
-     *
-     * @param file target archive.
-     * @throws IOException when file not found or error while read/write to file.
-     */
-    private void decompressArchive(File file) throws IOException {
-        ZipInputStream zis = new ZipInputStream(new FileInputStream(file));
-        ZipEntry ze = zis.getNextEntry();
-        while (ze != null) {
-            String fileName = ze.getName();
-            if (fileName.contains("_part")) {
-                System.out.println("Part of large file " + fileName + " found");
-                largeFiles.put(fileName, file);
-                ze = zis.getNextEntry();
-                continue;
-            }
-            File newFile = new File(Settings.outputUnzipDir + File.separator + fileName);
-            System.out.println("Decompress : " + newFile.getAbsoluteFile());
-
-            new File(newFile.getParent()).mkdirs();
-
-            FileOutputStream fos = new FileOutputStream(newFile);
-
-            FileUtil.write(zis, fos);
-            fos.close();
-            ze = zis.getNextEntry();
+    @Override
+    public boolean process(int id, byte cmd, byte[] buffer, int size) throws IOException {
+        OutputDecompressor decompressor = processors.get(id);
+        if (decompressor == null) {
+            decompressor = new OutputDecompressor();
+            if (!decompressor.initialize())
+                return false;
+            processors.put(id, decompressor);
         }
-        zis.closeEntry();
-        zis.close();
-        System.out.println("Done");
+        return decompressor.process(cmd, buffer, size);
     }
 
-    /**
-     * Decompress large files.
-     *
-     * @throws IOException when file not found or error while read/write to file.
-     */
-    private void decompressLargeFiles() throws IOException {
-        if (largeFiles.isEmpty()) {
-            return;
+    @Override
+    public boolean close() {
+        return true;
+    }
+
+    class OutputDecompressor {
+        public boolean initialize() {
+            return true;
         }
-        for (Map.Entry<String, File> entry : largeFiles.entrySet()) {
-            String fileName = entry.getKey();
-            String shortFileName = Settings.outputUnzipDir + File.separator +
-                    fileName.substring(0, fileName.indexOf("_part"));
-            FileOutputStream fos;
-            if (!largeFilesOutputStreams.keySet().contains(shortFileName)) {
-                File dir = new File(shortFileName).getParentFile();
-                if (!dir.exists()) {
-                    boolean mkdir = dir.mkdirs();
-                    if (!mkdir) {
-                        throw new RuntimeException("Cannot create directory for " + shortFileName);
-                    }
+
+        public boolean process(byte cmd, byte[] buffer, int size) {
+            switch (cmd) {
+                case Constants.CMD_START_FILE: {
+                    String subName = new String(buffer, 1, size - 1, StandardCharsets.UTF_8);
+                    System.out.println(String.format("FileToDecompress: %s", subName));
+
+                    break;
                 }
-                fos = new FileOutputStream(shortFileName);
-                largeFilesOutputStreams.put(shortFileName, fos);
-            } else {
-                fos = largeFilesOutputStreams.get(shortFileName);
+                case Constants.CMD_WRITE_FILE: {
+                    // Here we would write the contents of the buffer on the current file
+                    break;
+                }
+                default:
+                    return false;
             }
-
-            ZipFile zipFile = new ZipFile(entry.getValue());
-            ZipEntry zipEntry = zipFile.getEntry(fileName);
-            InputStream zis = zipFile.getInputStream(zipEntry);
-            FileUtil.write(zis, fos);
+            return true;
         }
     }
 }
