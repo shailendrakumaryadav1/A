@@ -1,14 +1,15 @@
 package archive.tool.core.impl;
 
 import archive.tool.console.Settings;
-import archive.tool.core.interfaces.Compressor;
 import archive.tool.core.Constants;
 import archive.tool.core.MultiToOneOutput;
+import archive.tool.core.interfaces.Compressor;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.zip.DeflaterInputStream;
 
 public class CompressorImpl implements Compressor {
     private File sourcePath, destPath;
@@ -257,7 +258,7 @@ public class CompressorImpl implements Compressor {
                         return;
 
                     if (file.isFile()) { // If its a file, send the compressed data
-                        BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+                        BufferedInputStream inputStream = new BufferedInputStream(getCompressorStream(new FileInputStream(file)));
                         int currentRead = 0, len = buffer.length;
                         int size = 0;
                         while ((currentRead = inputStream.read(buffer, size, len)) != -1) {
@@ -291,5 +292,12 @@ public class CompressorImpl implements Compressor {
         private String getSubName(File file) throws IOException {
             return file.getCanonicalPath().substring(sourcePathLen);
         }
+
+        // This method is the entry point to change the compression algorithm
+        // TODO: implement a method like getCompressorStream() for Decompressor
+        protected InputStream getCompressorStream(InputStream inputStream) {
+            return new DeflaterInputStream(inputStream);
+        }
+
     }
 }

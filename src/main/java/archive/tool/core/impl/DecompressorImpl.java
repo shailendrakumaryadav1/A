@@ -1,17 +1,16 @@
 package archive.tool.core.impl;
 
 import archive.tool.console.Settings;
-import archive.tool.core.*;
+import archive.tool.core.Constants;
+import archive.tool.core.OneInputToMulti;
 import archive.tool.core.interfaces.Decompressor;
 import archive.tool.core.interfaces.IMultiToOneProcessor;
 import archive.tool.core.interfaces.IOneToMultiProcessor;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.zip.InflaterOutputStream;
 
 public class DecompressorImpl implements Decompressor, IOneToMultiProcessor {
 
@@ -86,7 +85,7 @@ public class DecompressorImpl implements Decompressor, IOneToMultiProcessor {
                         file.mkdirs();
                     } else { // It's a file
                         file.getParentFile().mkdirs();
-                        output = new BufferedOutputStream(new FileOutputStream(file));
+                        output = new BufferedOutputStream(getCompressorStream(new FileOutputStream(file)));
                     }
                     file.setReadable(canRead);
                     file.setWritable(canWrite);
@@ -114,4 +113,11 @@ public class DecompressorImpl implements Decompressor, IOneToMultiProcessor {
             return true;
         }
     }
+
+    // This method is the entry point to change the compression algorithm
+    // See also getCompressorStream from Compressor
+    protected OutputStream getCompressorStream(OutputStream outputStream) {
+        return new InflaterOutputStream(outputStream);
+    }
+
 }
