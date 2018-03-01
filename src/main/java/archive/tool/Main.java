@@ -2,14 +2,14 @@ package archive.tool;
 
 import archive.tool.console.Console;
 import archive.tool.console.Settings;
-import archive.tool.core.interfaces.Compressor;
-import archive.tool.core.interfaces.Decompressor;
 import archive.tool.core.impl.CompressorImpl;
 import archive.tool.core.impl.DecompressorImpl;
+import archive.tool.core.interfaces.Compressor;
+import archive.tool.core.interfaces.Decompressor;
 
 public class Main {
 
-    public static void main(String... args) throws Exception {
+    public static void main(String... args) {
         System.out.println("Start program");
 
         // TODO: Do the work here.
