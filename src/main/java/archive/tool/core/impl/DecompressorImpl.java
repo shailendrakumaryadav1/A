@@ -2,6 +2,9 @@ package archive.tool.core.impl;
 
 import archive.tool.console.Settings;
 import archive.tool.core.*;
+import archive.tool.core.interfaces.Decompressor;
+import archive.tool.core.interfaces.IMultiToOneProcessor;
+import archive.tool.core.interfaces.IOneToMultiProcessor;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

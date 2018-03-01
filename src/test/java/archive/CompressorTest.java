@@ -12,7 +12,7 @@ public class CompressorTest {
 
         Settings.inputZipDir = "/Users/kumaryadav/Desktop/JustExampleFolder/in";
         Settings.outputZipDir = "/Users/kumaryadav/Desktop/JustExampleFolder/out";
-        Settings.maxSize = 7000;
+        Settings.maxSize = 7; // 7 MB
 
         CompressorImpl compressor = new CompressorImpl();
         compressor.compress();

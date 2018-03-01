@@ -1,4 +1,4 @@
-package archive.tool.core;
+package archive.tool.core.interfaces;
 
 import java.io.IOException;
 

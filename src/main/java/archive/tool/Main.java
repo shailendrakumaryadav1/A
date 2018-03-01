@@ -2,8 +2,8 @@ package archive.tool;
 
 import archive.tool.console.Console;
 import archive.tool.console.Settings;
-import archive.tool.core.Compressor;
-import archive.tool.core.Decompressor;
+import archive.tool.core.interfaces.Compressor;
+import archive.tool.core.interfaces.Decompressor;
 import archive.tool.core.impl.CompressorImpl;
 import archive.tool.core.impl.DecompressorImpl;
 

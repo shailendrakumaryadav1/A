@@ -1,7 +1,7 @@
 package archive;
 
 import archive.tool.console.Settings;
-import archive.tool.core.Decompressor;
+import archive.tool.core.interfaces.Decompressor;
 import archive.tool.core.impl.DecompressorImpl;
 import org.junit.Test;
 

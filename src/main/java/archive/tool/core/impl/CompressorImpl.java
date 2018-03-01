@@ -1,7 +1,7 @@
 package archive.tool.core.impl;
 
 import archive.tool.console.Settings;
-import archive.tool.core.Compressor;
+import archive.tool.core.interfaces.Compressor;
 import archive.tool.core.Constants;
 import archive.tool.core.MultiToOneOutput;
 
