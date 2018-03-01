@@ -17,9 +17,9 @@ public class DecompressorImpl implements Decompressor, IOneToMultiProcessor {
     private File sourcePath, destPath;
     private HashMap<Integer, IMultiToOneProcessor> processors;
 
-    public boolean decompress() throws IOException {
-        sourcePath = new File(Settings.inputDirDecompress).getCanonicalFile();
-        destPath = new File(Settings.outputDirDecompress);
+    public boolean decompress(Settings settings) throws IOException {
+        sourcePath = new File(settings.getInputDirDecompress()).getCanonicalFile();
+        destPath = new File(settings.getOutputDirDecompress());
         processors = new HashMap<>();
 
         // Validate arguments

@@ -15,13 +15,14 @@ public class Main {
         // TODO: Do the work here.
         Console console = new Console();
         console.enterSettings();
+        Settings settings = console.getSettings();
 
-        switch (Settings.action) {
+        switch (settings.getAction()) {
             case COMPRESS:
                 // TODO: Do compress here using settings
                 Compressor compressor = new CompressorImpl();
                 try {
-                    if (!compressor.compress()) {
+                    if (!compressor.compress(settings)) {
                         compressor.getLastError().printStackTrace(System.err);
                     }
                 } catch (Exception e) {
@@ -32,7 +33,7 @@ public class Main {
                 // TODO: Do decompress here using settings
                 Decompressor decompressor = new DecompressorImpl();
                 try {
-                    decompressor.decompress();
+                    decompressor.decompress(settings);
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
                 }

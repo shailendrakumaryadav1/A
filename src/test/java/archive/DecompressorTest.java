@@ -14,32 +14,35 @@ public class DecompressorTest {
     @Test
     public void shouldDecompress() throws Exception {
 
-        Settings.inputDirDecompress = "/Users/kumaryadav/Desktop/JustExampleFolder/out";
-        Settings.outputDirDecompress = "/Users/kumaryadav/Desktop/JustExampleFolder/in_1";
+        Settings settings = new Settings();
+        settings.setInputDirDecompress("/Users/kumaryadav/Desktop/JustExampleFolder/out");
+        settings.setOutputDirDecompress("/Users/kumaryadav/Desktop/JustExampleFolder/in_1");
 
         Decompressor decompressor = new DecompressorImpl();
-        Assert.assertTrue(decompressor.decompress());
+        Assert.assertTrue(decompressor.decompress(settings));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldCompressFailsForSourceDirDoesNotExist() throws IOException {
 
-        Settings.inputDirDecompress = "/Users/kumaryadav/Desktop/JustExampleFolder/out" + Math.random() + Math.random() + File.separator;
-        Settings.outputDirDecompress = "/Users/kumaryadav/Desktop/JustExampleFolder/in";
+        Settings settings = new Settings();
+        settings.setInputDirDecompress("/Users/kumaryadav/Desktop/JustExampleFolder/out" + Math.random() + Math.random() + File.separator);
+        settings.setOutputDirDecompress("/Users/kumaryadav/Desktop/JustExampleFolder/in");
 
         Decompressor decompressor = new DecompressorImpl();
-        decompressor.decompress();
+        decompressor.decompress(settings);
 
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldCompressFailsForSourceIsNotADirectory() throws IOException {
 
-        Settings.inputDirDecompress = "/Users/kumaryadav/Desktop/JustExampleFolder/out/staff.csv";
-        Settings.outputDirDecompress = "/Users/kumaryadav/Desktop/JustExampleFolder/in";
+        Settings settings = new Settings();
+        settings.setInputDirDecompress("/Users/kumaryadav/Desktop/JustExampleFolder/out/staff.csv");
+        settings.setOutputDirDecompress("/Users/kumaryadav/Desktop/JustExampleFolder/in");
 
         Decompressor decompressor = new DecompressorImpl();
-        decompressor.decompress();
+        decompressor.decompress(settings);
 
     }
 

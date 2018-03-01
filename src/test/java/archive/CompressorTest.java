@@ -15,35 +15,38 @@ public class CompressorTest {
     @Test
     public void shouldCompressSucceeds() throws Exception {
 
-        Settings.inputDirCompress = "/Users/kumaryadav/Desktop/JustExampleFolder";
-        Settings.outputDirCompress = "/Users/kumaryadav/Desktop/JustExampleFolder/out";
-        Settings.maxSizeCompress = 7; // 7 MB
+        Settings settings = new Settings();
+        settings.setInputDirCompress("/Users/kumaryadav/Desktop/JustExampleFolder");
+        settings.setOutputDirCompress("/Users/kumaryadav/Desktop/JustExampleFolder/out");
+        settings.setMaxSizeCompress(7); // 7 MB
 
         Compressor compressor = new CompressorImpl();
-        Assert.assertTrue(compressor.compress());
+        Assert.assertTrue(compressor.compress(settings));
     }
 
     @Test
     public void shouldCompressFailsForSourceDirDoesNotExist() throws IOException {
 
-        Settings.inputDirCompress = "/Users/kumaryadav/Desktop/" + Math.random() + Math.random() + File.separator;
-        Settings.outputDirCompress = "/Users/kumaryadav/Desktop/JustExampleFolder/out";
-        Settings.maxSizeCompress = 1;
+        Settings settings = new Settings();
+        settings.setInputDirCompress("/Users/kumaryadav/Desktop/" + Math.random() + Math.random() + File.separator);
+        settings.setOutputDirCompress("/Users/kumaryadav/Desktop/JustExampleFolder/out");
+        settings.setMaxSizeCompress(1);
 
         Compressor compressor = new CompressorImpl();
-        Assert.assertFalse(compressor.compress());
+        Assert.assertFalse(compressor.compress(settings));
 
     }
 
     @Test
     public void shouldCompressFailsForSourceIsNotADirectory() throws IOException {
 
-        Settings.inputDirCompress = "/Users/kumaryadav/Desktop/staff.csv";
-        Settings.outputDirCompress = "/Users/kumaryadav/Desktop/JustExampleFolder/out";
-        Settings.maxSizeCompress = 1;
+        Settings settings = new Settings();
+        settings.setInputDirCompress("/Users/kumaryadav/Desktop/staff.csv");
+        settings.setOutputDirCompress("/Users/kumaryadav/Desktop/JustExampleFolder/out");
+        settings.setMaxSizeCompress(1);
 
         Compressor compressor = new CompressorImpl();
-        Assert.assertFalse(compressor.compress());
+        Assert.assertFalse(compressor.compress(settings));
 
     }
 

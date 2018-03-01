@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 public class Console {
 
+    private Settings settings;
+
     public void enterSettings() {
 
         Scanner scanner = new Scanner(System.in);
@@ -12,14 +14,15 @@ public class Console {
         System.out.println("[0] Compress");
         System.out.println("[1] Decompress");
 
+        settings = new Settings();
         int action = scanner.nextInt();
         switch (action) {
             case 0:
-                Settings.action = Action.COMPRESS;
+                settings.setAction(Action.COMPRESS);
                 enterCompressSettings(scanner);
                 break;
             case 1:
-                Settings.action = Action.DECOMPRESS;
+                settings.setAction(Action.DECOMPRESS);
                 enterDecompressSettings(scanner);
                 break;
             default:
@@ -33,25 +36,29 @@ public class Console {
 
         System.out.println("\n Enter path to Input directory:");
         String inputDir = scanner.next();
-        Settings.inputDirCompress = inputDir;
+        settings.setInputDirCompress(inputDir);
 
         System.out.println("\n Enter path to Output directory:");
         String outputDir = scanner.next();
-        Settings.outputDirCompress = outputDir;
+        settings.setOutputDirCompress(outputDir);
 
         System.out.println("\n Enter max output file size in Mbytes:");
         Integer maxSize = scanner.nextInt();
-        Settings.maxSizeCompress = maxSize;
+        settings.setMaxSizeCompress(maxSize);
     }
 
     private void enterDecompressSettings(Scanner scanner) {
 
         System.out.println("\n Enter path to Input directory:");
         String inputDir = scanner.next();
-        Settings.inputDirDecompress = inputDir;
+        settings.setInputDirDecompress(inputDir);
 
         System.out.println("\n Enter path to Output directory:");
         String outputDir = scanner.next();
-        Settings.outputDirDecompress = outputDir;
+        settings.setOutputDirDecompress(outputDir);
+    }
+
+    public Settings getSettings() {
+        return settings;
     }
 }

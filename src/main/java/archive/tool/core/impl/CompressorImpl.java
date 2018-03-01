@@ -15,7 +15,7 @@ public class CompressorImpl implements Compressor {
     private File sourcePath, destPath;
     private int sourcePathLen;
     private int maxSize;
-
+    private int workerThreadsCount;
     private boolean hasToStop;
     private Exception lastError;
 
@@ -25,11 +25,12 @@ public class CompressorImpl implements Compressor {
 
     private Queue<File> inputQueue;
 
-    public boolean compress() throws IllegalArgumentException, IOException {
-        this.sourcePath = new File(Settings.inputDirCompress).getCanonicalFile();
+    public boolean compress(Settings settings) throws IllegalArgumentException, IOException {
+        this.sourcePath = new File(settings.getInputDirCompress()).getCanonicalFile();
         sourcePathLen = sourcePath.getCanonicalPath().length();
-        this.destPath = new File(Settings.outputDirCompress);
-        this.maxSize = Settings.maxSizeCompress;
+        this.destPath = new File(settings.getOutputDirCompress());
+        this.maxSize = settings.getMaxSizeCompress();
+        this.workerThreadsCount = settings.getWorkerThreadsCount();
         lastError = null;
         hasToStop = false;
 
@@ -55,8 +56,8 @@ public class CompressorImpl implements Compressor {
             return setError("No files/folders to compress.");
 
         // Instantiate worker threads
-        CompressorThread[] threads = new CompressorThread[Settings.workerThreadsCount];
-        for (int i = 0; i < Settings.workerThreadsCount; i++) {
+        CompressorThread[] threads = new CompressorThread[workerThreadsCount];
+        for (int i = 0; i < workerThreadsCount; i++) {
             threads[i] = new CompressorThread(i);
             Thread thread = new Thread(threads[i]);
             thread.setDaemon(true);
@@ -73,7 +74,7 @@ public class CompressorImpl implements Compressor {
 
     private boolean manage() throws IOException {
         MultiToOneOutput output = new MultiToOneOutput(destPath.toPath(), Constants.BASE_NAME, maxSize);
-        int working = Settings.workerThreadsCount;
+        int working = workerThreadsCount;
         while (!inputQueue.isEmpty() || working > 0) {
             // Wait for idle thread
             synchronized (lock) {
