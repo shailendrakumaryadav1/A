@@ -5,7 +5,7 @@ import archive.tool.console.Settings;
 import archive.tool.core.Compressor;
 import archive.tool.core.Decompressor;
 import archive.tool.core.impl.CompressorImpl;
-import archive.tool.core.impl.ZipDecompressor;
+import archive.tool.core.impl.DecompressorImpl;
 
 public class Main {
 
@@ -30,7 +30,7 @@ public class Main {
                 break;
             case DECOMPRESS:
                 // TODO: Do decompress here using settings
-                Decompressor decompressor = new ZipDecompressor();
+                Decompressor decompressor = new DecompressorImpl();
                 decompressor.decompress();
                 break;
         }

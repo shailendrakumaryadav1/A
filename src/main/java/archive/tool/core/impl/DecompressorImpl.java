@@ -12,7 +12,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-public class ZipDecompressor implements Decompressor {
+public class DecompressorImpl implements Decompressor {
 
     private Map<String, File> largeFiles = new TreeMap<>();
     private Map<String, FileOutputStream> largeFilesOutputStreams = new HashMap<>();

@@ -1,7 +1,7 @@
 package archive;
 
 import archive.tool.console.Settings;
-import archive.tool.core.impl.ZipDecompressor;
+import archive.tool.core.impl.DecompressorImpl;
 import org.junit.Test;
 
 public class DecompressorTest {
@@ -13,7 +13,7 @@ public class DecompressorTest {
         Settings.inputUnzipDir = "/Users/kumaryadav/Desktop/JustExampleFolder/out";
         Settings.outputUnzipDir = "/Users/kumaryadav/Desktop/JustExampleFolder/in_1";
 
-        ZipDecompressor decompressor = new ZipDecompressor();
+        DecompressorImpl decompressor = new DecompressorImpl();
         decompressor.decompress();
         System.out.println("Done");
     }
