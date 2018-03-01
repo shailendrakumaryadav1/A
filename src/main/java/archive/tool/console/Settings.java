@@ -1,5 +1,7 @@
 package archive.tool.console;
 
+import archive.tool.core.Constants;
+
 public class Settings {
 
     public static Action action;
@@ -12,4 +14,6 @@ public class Settings {
     //decompress settings
     public static String inputUnzipDir;
     public static String outputUnzipDir;
+
+    public static int workerThreadsCount = Constants.DEFAULT_WORKER_THREADS_COUNT;
 }

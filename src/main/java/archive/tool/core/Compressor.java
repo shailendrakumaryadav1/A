@@ -4,6 +4,8 @@ import java.io.IOException;
 
 public interface Compressor {
 
-    void compress() throws IOException;
+    boolean compress() throws IOException;
+
+    Exception getLastError();
 
 }

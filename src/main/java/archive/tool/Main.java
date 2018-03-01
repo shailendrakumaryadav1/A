@@ -20,7 +20,13 @@ public class Main {
             case COMPRESS:
                 // TODO: Do compress here using settings
                 Compressor compressor = new CompressorImpl();
-                compressor.compress();
+                try {
+                    if (!compressor.compress()) {
+                        compressor.getLastError().printStackTrace(System.err);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace(System.err);
+                }
                 break;
             case DECOMPRESS:
                 // TODO: Do decompress here using settings
