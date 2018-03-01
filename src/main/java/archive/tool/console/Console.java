@@ -39,9 +39,9 @@ public class Console {
         String outputDir = scanner.next();
         Settings.outputZipDir = outputDir;
 
-        System.out.println("\n Enter max output file size in bytes:");
+        System.out.println("\n Enter max output file size in Mbytes:");
         Integer maxSize = scanner.nextInt();
-        Settings.maxSize = maxSize;
+        Settings.maxSize = maxSize * 1024 * 1024;// converting to bytes
     }
 
     private void enterDecompressSettings(Scanner scanner) {
