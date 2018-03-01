@@ -15,9 +15,9 @@ public class CompressorTest {
     @Test
     public void shouldCompressSucceeds() throws Exception {
 
-        Settings.inputZipDir = "/Users/kumaryadav/Desktop/JustExampleFolder";
-        Settings.outputZipDir = "/Users/kumaryadav/Desktop/JustExampleFolder/out";
-        Settings.maxSize = 7; // 7 MB
+        Settings.inputDirCompress = "/Users/kumaryadav/Desktop/JustExampleFolder";
+        Settings.outputDirCompress = "/Users/kumaryadav/Desktop/JustExampleFolder/out";
+        Settings.maxSizeCompress = 7; // 7 MB
 
         Compressor compressor = new CompressorImpl();
         Assert.assertTrue(compressor.compress());
@@ -26,9 +26,9 @@ public class CompressorTest {
     @Test
     public void shouldCompressFailsForSourceDirDoesNotExist() throws IOException {
 
-        Settings.inputZipDir = "/Users/kumaryadav/Desktop/" + Math.random() + Math.random() + File.separator;
-        Settings.outputZipDir = "/Users/kumaryadav/Desktop/JustExampleFolder/out";
-        Settings.maxSize = 1;
+        Settings.inputDirCompress = "/Users/kumaryadav/Desktop/" + Math.random() + Math.random() + File.separator;
+        Settings.outputDirCompress = "/Users/kumaryadav/Desktop/JustExampleFolder/out";
+        Settings.maxSizeCompress = 1;
 
         Compressor compressor = new CompressorImpl();
         Assert.assertFalse(compressor.compress());
@@ -38,9 +38,9 @@ public class CompressorTest {
     @Test
     public void shouldCompressFailsForSourceIsNotADirectory() throws IOException {
 
-        Settings.inputZipDir = "/Users/kumaryadav/Desktop/staff.csv";
-        Settings.outputZipDir = "/Users/kumaryadav/Desktop/JustExampleFolder/out";
-        Settings.maxSize = 1;
+        Settings.inputDirCompress = "/Users/kumaryadav/Desktop/staff.csv";
+        Settings.outputDirCompress = "/Users/kumaryadav/Desktop/JustExampleFolder/out";
+        Settings.maxSizeCompress = 1;
 
         Compressor compressor = new CompressorImpl();
         Assert.assertFalse(compressor.compress());

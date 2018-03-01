@@ -14,8 +14,8 @@ public class DecompressorTest {
     @Test
     public void shouldDecompress() throws Exception {
 
-        Settings.inputUnzipDir = "/Users/kumaryadav/Desktop/JustExampleFolder/out";
-        Settings.outputUnzipDir = "/Users/kumaryadav/Desktop/JustExampleFolder/in_1";
+        Settings.inputDirDecompress = "/Users/kumaryadav/Desktop/JustExampleFolder/out";
+        Settings.outputDirDecompress = "/Users/kumaryadav/Desktop/JustExampleFolder/in_1";
 
         Decompressor decompressor = new DecompressorImpl();
         Assert.assertTrue(decompressor.decompress());
@@ -24,8 +24,8 @@ public class DecompressorTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldCompressFailsForSourceDirDoesNotExist() throws IOException {
 
-        Settings.inputUnzipDir = "/Users/kumaryadav/Desktop/JustExampleFolder/out" + Math.random() + Math.random() + File.separator;
-        Settings.outputUnzipDir = "/Users/kumaryadav/Desktop/JustExampleFolder/in";
+        Settings.inputDirDecompress = "/Users/kumaryadav/Desktop/JustExampleFolder/out" + Math.random() + Math.random() + File.separator;
+        Settings.outputDirDecompress = "/Users/kumaryadav/Desktop/JustExampleFolder/in";
 
         Decompressor decompressor = new DecompressorImpl();
         decompressor.decompress();
@@ -35,8 +35,8 @@ public class DecompressorTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldCompressFailsForSourceIsNotADirectory() throws IOException {
 
-        Settings.inputUnzipDir = "/Users/kumaryadav/Desktop/JustExampleFolder/out/staff.csv";
-        Settings.outputUnzipDir = "/Users/kumaryadav/Desktop/JustExampleFolder/in";
+        Settings.inputDirDecompress = "/Users/kumaryadav/Desktop/JustExampleFolder/out/staff.csv";
+        Settings.outputDirDecompress = "/Users/kumaryadav/Desktop/JustExampleFolder/in";
 
         Decompressor decompressor = new DecompressorImpl();
         decompressor.decompress();

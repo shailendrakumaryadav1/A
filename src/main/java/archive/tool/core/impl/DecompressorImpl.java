@@ -18,8 +18,8 @@ public class DecompressorImpl implements Decompressor, IOneToMultiProcessor {
     private HashMap<Integer, IMultiToOneProcessor> processors;
 
     public boolean decompress() throws IOException {
-        sourcePath = new File(Settings.inputUnzipDir).getCanonicalFile();
-        destPath = new File(Settings.outputUnzipDir);
+        sourcePath = new File(Settings.inputDirDecompress).getCanonicalFile();
+        destPath = new File(Settings.outputDirDecompress);
         processors = new HashMap<>();
 
         // Validate arguments

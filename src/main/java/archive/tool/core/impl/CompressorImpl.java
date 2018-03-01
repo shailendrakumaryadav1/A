@@ -26,10 +26,10 @@ public class CompressorImpl implements Compressor {
     private Queue<File> inputQueue;
 
     public boolean compress() throws IllegalArgumentException, IOException {
-        this.sourcePath = new File(Settings.inputZipDir).getCanonicalFile();
+        this.sourcePath = new File(Settings.inputDirCompress).getCanonicalFile();
         sourcePathLen = sourcePath.getCanonicalPath().length();
-        this.destPath = new File(Settings.outputZipDir);
-        this.maxSize = Settings.maxSize;
+        this.destPath = new File(Settings.outputDirCompress);
+        this.maxSize = Settings.maxSizeCompress;
         lastError = null;
         hasToStop = false;
 

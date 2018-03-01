@@ -33,25 +33,25 @@ public class Console {
 
         System.out.println("\n Enter path to Input directory:");
         String inputDir = scanner.next();
-        Settings.inputZipDir = inputDir;
+        Settings.inputDirCompress = inputDir;
 
         System.out.println("\n Enter path to Output directory:");
         String outputDir = scanner.next();
-        Settings.outputZipDir = outputDir;
+        Settings.outputDirCompress = outputDir;
 
         System.out.println("\n Enter max output file size in Mbytes:");
         Integer maxSize = scanner.nextInt();
-        Settings.maxSize = maxSize;
+        Settings.maxSizeCompress = maxSize;
     }
 
     private void enterDecompressSettings(Scanner scanner) {
 
         System.out.println("\n Enter path to Input directory:");
         String inputDir = scanner.next();
-        Settings.inputUnzipDir = inputDir;
+        Settings.inputDirDecompress = inputDir;
 
         System.out.println("\n Enter path to Output directory:");
         String outputDir = scanner.next();
-        Settings.outputUnzipDir = outputDir;
+        Settings.outputDirDecompress = outputDir;
     }
 }
