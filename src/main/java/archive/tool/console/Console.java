@@ -41,7 +41,7 @@ public class Console {
 
         System.out.println("\n Enter max output file size in Mbytes:");
         Integer maxSize = scanner.nextInt();
-        Settings.maxSize = maxSize * 1024 * 1024;// converting to bytes
+        Settings.maxSize = maxSize;
     }
 
     private void enterDecompressSettings(Scanner scanner) {
